@@ -4,6 +4,7 @@
 
 %{
     #include<string>
+    #include "ast.h"
     #include "parser.hpp"
     void yyerror(char *);
     using namespace std;
@@ -36,11 +37,11 @@ SingleLineComment "//".*
 MultilineComment "/*"([^\*]|(\*)*[^\*/])*(\*)*"*/"
 
 %%
-{DEC_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 10); return INTCONST;}
-{OCT_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 8); return INTCONST;}
-{HEX_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 16); return INTCONST;}
+{DEC_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 10); return INT;}
+{OCT_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 8); return INT;}
+{HEX_INT_LIT}       {yylval.int_val = strtol(yytext, nullptr, 16); return INT;}
 
-{DEC_FLOAT_LIT}     {yylval.float_val = strtof(yytext, nullptr); return FLOATCONST;}
+{DEC_FLOAT_LIT}     {yylval.float_val = strtof(yytext, nullptr); return FLOAT;}
 
 
 "int"               {return INTTYPE;}
@@ -54,7 +55,7 @@ MultilineComment "/*"([^\*]|(\*)*[^\*/])*(\*)*"*/"
 "break"             {return BREAK;}
 "continue"          {return CONTINUE;}
 
-{ID}                {yylval.id_name = new string(yytext); return IDENT;}
+{ID}                {yylval.id_name = new string(yytext); return ID;}
 ">="                {return GTE;}
 "<="                {return LTE;}
 ">"                 {return GT;}
