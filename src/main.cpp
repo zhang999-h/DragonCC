@@ -1,13 +1,25 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include "ast.h"
 #include "define.h"
+#include "parser.hpp"
+#include "tokens.hpp"
 using namespace std;
 extern unique_ptr<CompUnitAST> root;
-extern int yyparse();
 
-int main(int, char**) {
-    
+
+int main(int argc, char** argv) {
     std::cout << "Hello, from DragonCC!\n\n";
+    char* filename = nullptr;
+    filename = argv[1];
+    printf("open : %s\n",filename);
+    cout<<argc;
+    yyin = fopen(filename, "r");
+    if (yyin == nullptr) {
+        std::cout << "yyin open" << filename << "failed" << std::endl;
+        return -1;
+    }
     yyparse();
+
 }
