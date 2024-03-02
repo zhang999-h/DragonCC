@@ -6,6 +6,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Instructions.h"
 
+using namespace llvm;
 class GenIR : public Visitor
 {
 private:
