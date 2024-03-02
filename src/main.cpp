@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     std::cout << "Hello, from DragonCC!\n\n";
     char* filename = nullptr;
     filename = argv[1];
-    printf("open : %s\n",filename);
-    cout<<argc;
+    printf("open : %s\n", filename);
+    cout << argc;
     yyin = fopen(filename, "r");
     if (yyin == nullptr) {
         std::cout << "yyin open" << filename << "failed" << std::endl;

@@ -17,7 +17,8 @@
     char filename[100];
     unique_ptr<CompUnitAST> root;
 }
-
+/* bison -d -o parser.cpp parser.y
+flex -o tokens.cpp --header-file=tokens.hpp  tokens.l */
 %union{
   CompUnitAST* compUnit;
   DeclDefAST* declDef;
@@ -103,7 +104,13 @@
 %type <ty> BType VoidType
 %type <op> UnaryOp
 
-
+%right ASSIGN
+%left OR AND
+%left EQ NEQ
+%left GTE LTE GT LT
+%left ADD MINUS
+%left MOD MUL DIV
+%right NOT
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 

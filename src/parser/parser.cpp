@@ -583,16 +583,16 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   113,   113,   119,   123,   130,   134,   141,   147,   156,
-     159,   165,   171,   175,   182,   188,   193,   198,   205,   209,
-     217,   221,   224,   231,   235,   242,   249,   255,   262,   271,
-     275,   282,   288,   294,   304,   307,   314,   318,   325,   329,
-     336,   340,   346,   351,   355,   359,   364,   369,   374,   382,
-     387,   396,   404,   408,   414,   420,   426,   430,   438,   442,
-     446,   453,   458,   466,   470,   474,   482,   486,   494,   497,
-     500,   506,   510,   517,   521,   527,   533,   542,   546,   552,
-     561,   565,   571,   577,   583,   592,   596,   602,   611,   615,
-     623,   627
+       0,   119,   119,   125,   129,   136,   140,   147,   153,   162,
+     165,   171,   177,   181,   188,   194,   199,   204,   211,   215,
+     223,   227,   230,   237,   241,   248,   255,   261,   268,   277,
+     281,   288,   294,   300,   310,   313,   320,   324,   331,   335,
+     342,   346,   352,   357,   361,   365,   370,   375,   380,   388,
+     393,   402,   410,   414,   420,   426,   432,   436,   444,   448,
+     452,   459,   464,   472,   476,   480,   488,   492,   500,   503,
+     506,   512,   516,   523,   527,   533,   539,   548,   552,   558,
+     567,   571,   577,   583,   589,   598,   602,   608,   617,   621,
+     629,   633
 };
 #endif
 
@@ -1388,7 +1388,7 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* Program: CompUnit  */
-#line 113 "parser.y"
+#line 119 "parser.y"
            {
     root = unique_ptr<CompUnitAST>((yyvsp[0].compUnit));
   }
@@ -1396,7 +1396,7 @@ yyreduce:
     break;
 
   case 3: /* CompUnit: CompUnit DeclDef  */
-#line 119 "parser.y"
+#line 125 "parser.y"
                    {
     (yyval.compUnit) = (yyvsp[-1].compUnit);
     (yyval.compUnit)->declDefList.push_back(unique_ptr<DeclDefAST>((yyvsp[0].declDef)));
@@ -1405,7 +1405,7 @@ yyreduce:
     break;
 
   case 4: /* CompUnit: DeclDef  */
-#line 123 "parser.y"
+#line 129 "parser.y"
           {
     (yyval.compUnit) = new CompUnitAST();
     (yyval.compUnit)->declDefList.push_back(unique_ptr<DeclDefAST>((yyvsp[0].declDef)));
@@ -1414,7 +1414,7 @@ yyreduce:
     break;
 
   case 5: /* DeclDef: Decl  */
-#line 130 "parser.y"
+#line 136 "parser.y"
        {
     (yyval.declDef) = new DeclDefAST();
     (yyval.declDef)->Decl = unique_ptr<DeclAST>((yyvsp[0].decl));
@@ -1423,7 +1423,7 @@ yyreduce:
     break;
 
   case 6: /* DeclDef: FuncDef  */
-#line 134 "parser.y"
+#line 140 "parser.y"
           {
     (yyval.declDef) = new DeclDefAST();
     (yyval.declDef)->funcDef = unique_ptr<FuncDefAST>((yyvsp[0].funcDef));
@@ -1432,7 +1432,7 @@ yyreduce:
     break;
 
   case 7: /* Decl: CONST BType DefList SEMICOLON  */
-#line 141 "parser.y"
+#line 147 "parser.y"
                                 {
     (yyval.decl) = new DeclAST();
     (yyval.decl)->isConst = true;
@@ -1443,7 +1443,7 @@ yyreduce:
     break;
 
   case 8: /* Decl: BType DefList SEMICOLON  */
-#line 147 "parser.y"
+#line 153 "parser.y"
                           {
     (yyval.decl) = new DeclAST();
     (yyval.decl)->isConst = false;
@@ -1454,7 +1454,7 @@ yyreduce:
     break;
 
   case 9: /* BType: INTTYPE  */
-#line 156 "parser.y"
+#line 162 "parser.y"
           {
     (yyval.ty) = TYPE_INT;
   }
@@ -1462,7 +1462,7 @@ yyreduce:
     break;
 
   case 10: /* BType: FLOATTYPE  */
-#line 159 "parser.y"
+#line 165 "parser.y"
             {
     (yyval.ty) = TYPE_FLOAT;
   }
@@ -1470,7 +1470,7 @@ yyreduce:
     break;
 
   case 11: /* VoidType: VOID  */
-#line 165 "parser.y"
+#line 171 "parser.y"
        {
     (yyval.ty) = TYPE_VOID;
   }
@@ -1478,7 +1478,7 @@ yyreduce:
     break;
 
   case 12: /* DefList: Def  */
-#line 171 "parser.y"
+#line 177 "parser.y"
       {
     (yyval.defList) = new DefListAST();
     (yyval.defList)->list.push_back(unique_ptr<DefAST>((yyvsp[0].def)));
@@ -1487,7 +1487,7 @@ yyreduce:
     break;
 
   case 13: /* DefList: DefList COMMA Def  */
-#line 175 "parser.y"
+#line 181 "parser.y"
                     {
     (yyval.defList) = (yyvsp[-2].defList);
     (yyval.defList)->list.push_back(unique_ptr<DefAST>((yyvsp[0].def)));
@@ -1496,7 +1496,7 @@ yyreduce:
     break;
 
   case 14: /* Def: ID Arrays ASSIGN InitVal  */
-#line 182 "parser.y"
+#line 188 "parser.y"
                            {
     (yyval.def) = new DefAST();
     (yyval.def)->id = unique_ptr<string>((yyvsp[-3].id_name));
@@ -1507,7 +1507,7 @@ yyreduce:
     break;
 
   case 15: /* Def: ID ASSIGN InitVal  */
-#line 188 "parser.y"
+#line 194 "parser.y"
                     {
     (yyval.def) = new DefAST();
     (yyval.def)->id = unique_ptr<string>((yyvsp[-2].id_name));
@@ -1517,7 +1517,7 @@ yyreduce:
     break;
 
   case 16: /* Def: ID Arrays  */
-#line 193 "parser.y"
+#line 199 "parser.y"
             {
     (yyval.def) = new DefAST();
     (yyval.def)->id = unique_ptr<string>((yyvsp[-1].id_name));
@@ -1527,7 +1527,7 @@ yyreduce:
     break;
 
   case 17: /* Def: ID  */
-#line 198 "parser.y"
+#line 204 "parser.y"
      {
     (yyval.def) = new DefAST();
     (yyval.def)->id = unique_ptr<string>((yyvsp[0].id_name));
@@ -1536,7 +1536,7 @@ yyreduce:
     break;
 
   case 18: /* Arrays: LB Exp RB  */
-#line 205 "parser.y"
+#line 211 "parser.y"
             {
     (yyval.arrays) = new ArraysAST();
     (yyval.arrays)->list.push_back(unique_ptr<AddExpAST>((yyvsp[-1].addExp)));
@@ -1545,7 +1545,7 @@ yyreduce:
     break;
 
   case 19: /* Arrays: Arrays LB Exp RB  */
-#line 209 "parser.y"
+#line 215 "parser.y"
                    {
     (yyval.arrays) = (yyvsp[-3].arrays);
     (yyval.arrays)->list.push_back(unique_ptr<AddExpAST>((yyvsp[-1].addExp)));
@@ -1554,7 +1554,7 @@ yyreduce:
     break;
 
   case 20: /* InitVal: Exp  */
-#line 217 "parser.y"
+#line 223 "parser.y"
       {
     (yyval.initVal) = new InitValAST();
     (yyval.initVal)->exp = unique_ptr<AddExpAST>((yyvsp[0].addExp));
@@ -1563,7 +1563,7 @@ yyreduce:
     break;
 
   case 21: /* InitVal: LC RC  */
-#line 221 "parser.y"
+#line 227 "parser.y"
         {
     (yyval.initVal) = new InitValAST();
   }
@@ -1571,7 +1571,7 @@ yyreduce:
     break;
 
   case 22: /* InitVal: LC InitValList RC  */
-#line 224 "parser.y"
+#line 230 "parser.y"
                     {
     (yyval.initVal) = new InitValAST();
     (yyval.initVal)->initValList.swap((yyvsp[-1].initValList)->list);
@@ -1580,7 +1580,7 @@ yyreduce:
     break;
 
   case 23: /* InitValList: InitValList COMMA InitVal  */
-#line 231 "parser.y"
+#line 237 "parser.y"
                             {
     (yyval.initValList) = (yyvsp[-2].initValList);
     (yyval.initValList)->list.push_back(unique_ptr<InitValAST>((yyvsp[0].initVal)));
@@ -1589,7 +1589,7 @@ yyreduce:
     break;
 
   case 24: /* InitValList: InitVal  */
-#line 235 "parser.y"
+#line 241 "parser.y"
           {
     (yyval.initValList) = new InitValListAST();
     (yyval.initValList)->list.push_back(unique_ptr<InitValAST>((yyvsp[0].initVal)));
@@ -1598,7 +1598,7 @@ yyreduce:
     break;
 
   case 25: /* FuncDef: BType ID LP FuncFParamList RP Block  */
-#line 242 "parser.y"
+#line 248 "parser.y"
                                       {
     (yyval.funcDef) = new FuncDefAST();
     (yyval.funcDef)->funcType = (yyvsp[-5].ty);
@@ -1610,7 +1610,7 @@ yyreduce:
     break;
 
   case 26: /* FuncDef: BType ID LP RP Block  */
-#line 249 "parser.y"
+#line 255 "parser.y"
                        {
     (yyval.funcDef) = new FuncDefAST();
     (yyval.funcDef)->funcType = (yyvsp[-4].ty);
@@ -1621,7 +1621,7 @@ yyreduce:
     break;
 
   case 27: /* FuncDef: VoidType ID LP FuncFParamList RP Block  */
-#line 255 "parser.y"
+#line 261 "parser.y"
                                          {
     (yyval.funcDef) = new FuncDefAST();
     (yyval.funcDef)->funcType = (yyvsp[-5].ty);
@@ -1633,7 +1633,7 @@ yyreduce:
     break;
 
   case 28: /* FuncDef: VoidType ID LP RP Block  */
-#line 262 "parser.y"
+#line 268 "parser.y"
                           {
     (yyval.funcDef) = new FuncDefAST();
     (yyval.funcDef)->funcType = (yyvsp[-4].ty);
@@ -1644,7 +1644,7 @@ yyreduce:
     break;
 
   case 29: /* FuncFParamList: FuncFParam  */
-#line 271 "parser.y"
+#line 277 "parser.y"
              {
     (yyval.FuncFParamList) = new FuncFParamListAST();
     (yyval.FuncFParamList)->list.push_back(unique_ptr<FuncFParamAST>((yyvsp[0].funcFParam)));
@@ -1653,7 +1653,7 @@ yyreduce:
     break;
 
   case 30: /* FuncFParamList: FuncFParamList COMMA FuncFParam  */
-#line 275 "parser.y"
+#line 281 "parser.y"
                                   {
     (yyval.FuncFParamList) = (yyvsp[-2].FuncFParamList);
     (yyval.FuncFParamList)->list.push_back(unique_ptr<FuncFParamAST>((yyvsp[0].funcFParam)));
@@ -1662,7 +1662,7 @@ yyreduce:
     break;
 
   case 31: /* FuncFParam: BType ID  */
-#line 282 "parser.y"
+#line 288 "parser.y"
            {
     (yyval.funcFParam) = new FuncFParamAST();
     (yyval.funcFParam)->bType = (yyvsp[-1].ty);
@@ -1673,7 +1673,7 @@ yyreduce:
     break;
 
   case 32: /* FuncFParam: BType ID LB RB  */
-#line 288 "parser.y"
+#line 294 "parser.y"
                  {
     (yyval.funcFParam) = new FuncFParamAST();
     (yyval.funcFParam)->bType = (yyvsp[-3].ty);
@@ -1684,7 +1684,7 @@ yyreduce:
     break;
 
   case 33: /* FuncFParam: BType ID LB RB Arrays  */
-#line 294 "parser.y"
+#line 300 "parser.y"
                         {
     (yyval.funcFParam) = new FuncFParamAST();
     (yyval.funcFParam)->bType = (yyvsp[-4].ty);
@@ -1696,7 +1696,7 @@ yyreduce:
     break;
 
   case 34: /* Block: LC RC  */
-#line 304 "parser.y"
+#line 310 "parser.y"
         {
     (yyval.block) = new BlockAST();
   }
@@ -1704,7 +1704,7 @@ yyreduce:
     break;
 
   case 35: /* Block: LC BlockItemList RC  */
-#line 307 "parser.y"
+#line 313 "parser.y"
                       {
     (yyval.block) = new BlockAST();
     (yyval.block)->blockItemList.swap((yyvsp[-1].blockItemList)->list);
@@ -1713,7 +1713,7 @@ yyreduce:
     break;
 
   case 36: /* BlockItemList: BlockItem  */
-#line 314 "parser.y"
+#line 320 "parser.y"
             {
     (yyval.blockItemList) = new BlockItemListAST();
     (yyval.blockItemList)->list.push_back(unique_ptr<BlockItemAST>((yyvsp[0].blockItem)));
@@ -1722,7 +1722,7 @@ yyreduce:
     break;
 
   case 37: /* BlockItemList: BlockItemList BlockItem  */
-#line 318 "parser.y"
+#line 324 "parser.y"
                           {
     (yyval.blockItemList) = (yyvsp[-1].blockItemList);
     (yyval.blockItemList)->list.push_back(unique_ptr<BlockItemAST>((yyvsp[0].blockItem)));
@@ -1731,7 +1731,7 @@ yyreduce:
     break;
 
   case 38: /* BlockItem: Decl  */
-#line 325 "parser.y"
+#line 331 "parser.y"
        {
     (yyval.blockItem) = new BlockItemAST();
     (yyval.blockItem)->decl = unique_ptr<DeclAST>((yyvsp[0].decl));
@@ -1740,7 +1740,7 @@ yyreduce:
     break;
 
   case 39: /* BlockItem: Stmt  */
-#line 329 "parser.y"
+#line 335 "parser.y"
        {
     (yyval.blockItem) = new BlockItemAST();
     (yyval.blockItem)->stmt = unique_ptr<StmtAST>((yyvsp[0].stmt));
@@ -1749,7 +1749,7 @@ yyreduce:
     break;
 
   case 40: /* Stmt: SEMICOLON  */
-#line 336 "parser.y"
+#line 342 "parser.y"
             {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = SEMI;
@@ -1758,7 +1758,7 @@ yyreduce:
     break;
 
   case 41: /* Stmt: LVal ASSIGN Exp SEMICOLON  */
-#line 340 "parser.y"
+#line 346 "parser.y"
                             {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = ASS;
@@ -1769,7 +1769,7 @@ yyreduce:
     break;
 
   case 42: /* Stmt: Exp SEMICOLON  */
-#line 346 "parser.y"
+#line 352 "parser.y"
                 {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = EXP;
@@ -1779,7 +1779,7 @@ yyreduce:
     break;
 
   case 43: /* Stmt: CONTINUE SEMICOLON  */
-#line 351 "parser.y"
+#line 357 "parser.y"
                      {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = CONT;
@@ -1788,7 +1788,7 @@ yyreduce:
     break;
 
   case 44: /* Stmt: BREAK SEMICOLON  */
-#line 355 "parser.y"
+#line 361 "parser.y"
                   {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = BRE;
@@ -1797,7 +1797,7 @@ yyreduce:
     break;
 
   case 45: /* Stmt: Block  */
-#line 359 "parser.y"
+#line 365 "parser.y"
         {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = BLK;
@@ -1807,7 +1807,7 @@ yyreduce:
     break;
 
   case 46: /* Stmt: ReturnStmt  */
-#line 364 "parser.y"
+#line 370 "parser.y"
              {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = RET;
@@ -1817,7 +1817,7 @@ yyreduce:
     break;
 
   case 47: /* Stmt: SelectStmt  */
-#line 369 "parser.y"
+#line 375 "parser.y"
              {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = SEL;
@@ -1827,7 +1827,7 @@ yyreduce:
     break;
 
   case 48: /* Stmt: IterationStmt  */
-#line 374 "parser.y"
+#line 380 "parser.y"
                 {
     (yyval.stmt) = new StmtAST();
     (yyval.stmt)->sType = ITER;
@@ -1837,7 +1837,7 @@ yyreduce:
     break;
 
   case 49: /* SelectStmt: IF LP Cond RP Stmt  */
-#line 382 "parser.y"
+#line 388 "parser.y"
                                            {
     (yyval.selectStmt) = new SelectStmtAST();
     (yyval.selectStmt)->cond = unique_ptr<LOrExpAST>((yyvsp[-2].lOrExp));
@@ -1847,7 +1847,7 @@ yyreduce:
     break;
 
   case 50: /* SelectStmt: IF LP Cond RP Stmt ELSE Stmt  */
-#line 387 "parser.y"
+#line 393 "parser.y"
                                {
     (yyval.selectStmt) = new SelectStmtAST();
     (yyval.selectStmt)->cond = unique_ptr<LOrExpAST>((yyvsp[-4].lOrExp));
@@ -1858,7 +1858,7 @@ yyreduce:
     break;
 
   case 51: /* IterationStmt: WHILE LP Cond RP Stmt  */
-#line 396 "parser.y"
+#line 402 "parser.y"
                         {
     (yyval.iterationStmt) = new IterationStmtAST();
     (yyval.iterationStmt)->cond = unique_ptr<LOrExpAST>((yyvsp[-2].lOrExp));
@@ -1868,7 +1868,7 @@ yyreduce:
     break;
 
   case 52: /* ReturnStmt: RETURN Exp SEMICOLON  */
-#line 404 "parser.y"
+#line 410 "parser.y"
                        {
     (yyval.returnStmt) = new ReturnStmtAST();
     (yyval.returnStmt)->exp = unique_ptr<AddExpAST>((yyvsp[-1].addExp));
@@ -1877,7 +1877,7 @@ yyreduce:
     break;
 
   case 53: /* ReturnStmt: RETURN SEMICOLON  */
-#line 408 "parser.y"
+#line 414 "parser.y"
                    {
     (yyval.returnStmt) = new ReturnStmtAST();
   }
@@ -1885,7 +1885,7 @@ yyreduce:
     break;
 
   case 54: /* Exp: AddExp  */
-#line 414 "parser.y"
+#line 420 "parser.y"
          {
     (yyval.addExp) = (yyvsp[0].addExp);
   }
@@ -1893,7 +1893,7 @@ yyreduce:
     break;
 
   case 55: /* Cond: LOrExp  */
-#line 420 "parser.y"
+#line 426 "parser.y"
          {
     (yyval.lOrExp) = (yyvsp[0].lOrExp);
   }
@@ -1901,7 +1901,7 @@ yyreduce:
     break;
 
   case 56: /* LVal: ID  */
-#line 426 "parser.y"
+#line 432 "parser.y"
      {
     (yyval.lVal) = new LValAST();
     (yyval.lVal)->id = unique_ptr<string>((yyvsp[0].id_name));
@@ -1910,7 +1910,7 @@ yyreduce:
     break;
 
   case 57: /* LVal: ID Arrays  */
-#line 430 "parser.y"
+#line 436 "parser.y"
             {
     (yyval.lVal) = new LValAST();
     (yyval.lVal)->id = unique_ptr<string>((yyvsp[-1].id_name));
@@ -1920,7 +1920,7 @@ yyreduce:
     break;
 
   case 58: /* PrimaryExp: LP Exp RP  */
-#line 438 "parser.y"
+#line 444 "parser.y"
             {
     (yyval.primaryExp) = new PrimaryExpAST();
     (yyval.primaryExp)->exp = unique_ptr<AddExpAST>((yyvsp[-1].addExp));
@@ -1929,7 +1929,7 @@ yyreduce:
     break;
 
   case 59: /* PrimaryExp: LVal  */
-#line 442 "parser.y"
+#line 448 "parser.y"
        {
     (yyval.primaryExp) = new PrimaryExpAST();
     (yyval.primaryExp)->lval = unique_ptr<LValAST>((yyvsp[0].lVal));
@@ -1938,7 +1938,7 @@ yyreduce:
     break;
 
   case 60: /* PrimaryExp: Number  */
-#line 446 "parser.y"
+#line 452 "parser.y"
          {
     (yyval.primaryExp) = new PrimaryExpAST();
     (yyval.primaryExp)->number = unique_ptr<NumberAST>((yyvsp[0].number));
@@ -1947,7 +1947,7 @@ yyreduce:
     break;
 
   case 61: /* Number: INT  */
-#line 453 "parser.y"
+#line 459 "parser.y"
       {
     (yyval.number) = new NumberAST();
     (yyval.number)->isInt = true;
@@ -1957,7 +1957,7 @@ yyreduce:
     break;
 
   case 62: /* Number: FLOAT  */
-#line 458 "parser.y"
+#line 464 "parser.y"
         {
     (yyval.number) = new NumberAST();
     (yyval.number)->isInt = false;
@@ -1967,7 +1967,7 @@ yyreduce:
     break;
 
   case 63: /* UnaryExp: PrimaryExp  */
-#line 466 "parser.y"
+#line 472 "parser.y"
              {
     (yyval.unaryExp) = new UnaryExpAST();
     (yyval.unaryExp)->primaryExp = unique_ptr<PrimaryExpAST>((yyvsp[0].primaryExp));
@@ -1976,7 +1976,7 @@ yyreduce:
     break;
 
   case 64: /* UnaryExp: Call  */
-#line 470 "parser.y"
+#line 476 "parser.y"
        {
     (yyval.unaryExp) = new UnaryExpAST();
     (yyval.unaryExp)->call = unique_ptr<CallAST>((yyvsp[0].call));
@@ -1985,7 +1985,7 @@ yyreduce:
     break;
 
   case 65: /* UnaryExp: UnaryOp UnaryExp  */
-#line 474 "parser.y"
+#line 480 "parser.y"
                    {
     (yyval.unaryExp) = new UnaryExpAST();
     (yyval.unaryExp)->op = (yyvsp[-1].op);
@@ -1995,7 +1995,7 @@ yyreduce:
     break;
 
   case 66: /* Call: ID LP RP  */
-#line 482 "parser.y"
+#line 488 "parser.y"
            {
     (yyval.call) = new CallAST();
     (yyval.call)->id = unique_ptr<string>((yyvsp[-2].id_name));
@@ -2004,7 +2004,7 @@ yyreduce:
     break;
 
   case 67: /* Call: ID LP FuncCParamList RP  */
-#line 486 "parser.y"
+#line 492 "parser.y"
                           {
     (yyval.call) = new CallAST();
     (yyval.call)->id = unique_ptr<string>((yyvsp[-3].id_name));
@@ -2014,7 +2014,7 @@ yyreduce:
     break;
 
   case 68: /* UnaryOp: ADD  */
-#line 494 "parser.y"
+#line 500 "parser.y"
       {
     (yyval.op) = UOP_ADD;
   }
@@ -2022,7 +2022,7 @@ yyreduce:
     break;
 
   case 69: /* UnaryOp: MINUS  */
-#line 497 "parser.y"
+#line 503 "parser.y"
         {
     (yyval.op) = UOP_MINUS;
   }
@@ -2030,7 +2030,7 @@ yyreduce:
     break;
 
   case 70: /* UnaryOp: NOT  */
-#line 500 "parser.y"
+#line 506 "parser.y"
       {
     (yyval.op) = UOP_NOT;
   }
@@ -2038,7 +2038,7 @@ yyreduce:
     break;
 
   case 71: /* FuncCParamList: Exp  */
-#line 506 "parser.y"
+#line 512 "parser.y"
       {
     (yyval.funcCParamList) = new FuncCParamListAST();
     (yyval.funcCParamList)->list.push_back(unique_ptr<AddExpAST>((yyvsp[0].addExp)));
@@ -2047,7 +2047,7 @@ yyreduce:
     break;
 
   case 72: /* FuncCParamList: FuncCParamList COMMA Exp  */
-#line 510 "parser.y"
+#line 516 "parser.y"
                            {
     (yyval.funcCParamList) = (FuncCParamListAST*) (yyvsp[-2].funcCParamList);
     (yyval.funcCParamList)->list.push_back(unique_ptr<AddExpAST>((yyvsp[0].addExp)));
@@ -2056,7 +2056,7 @@ yyreduce:
     break;
 
   case 73: /* MulExp: UnaryExp  */
-#line 517 "parser.y"
+#line 523 "parser.y"
            {
     (yyval.mulExp) = new MulExpAST();
     (yyval.mulExp)->unaryExp = unique_ptr<UnaryExpAST>((yyvsp[0].unaryExp));
@@ -2065,7 +2065,7 @@ yyreduce:
     break;
 
   case 74: /* MulExp: MulExp MUL UnaryExp  */
-#line 521 "parser.y"
+#line 527 "parser.y"
                       {
     (yyval.mulExp) = new MulExpAST();
     (yyval.mulExp)->mulExp = unique_ptr<MulExpAST>((yyvsp[-2].mulExp));
@@ -2076,7 +2076,7 @@ yyreduce:
     break;
 
   case 75: /* MulExp: MulExp DIV UnaryExp  */
-#line 527 "parser.y"
+#line 533 "parser.y"
                       {
     (yyval.mulExp) = new MulExpAST();
     (yyval.mulExp)->mulExp = unique_ptr<MulExpAST>((yyvsp[-2].mulExp));
@@ -2087,7 +2087,7 @@ yyreduce:
     break;
 
   case 76: /* MulExp: MulExp MOD UnaryExp  */
-#line 533 "parser.y"
+#line 539 "parser.y"
                       {
     (yyval.mulExp) = new MulExpAST();
     (yyval.mulExp)->mulExp = unique_ptr<MulExpAST>((yyvsp[-2].mulExp));
@@ -2098,7 +2098,7 @@ yyreduce:
     break;
 
   case 77: /* AddExp: MulExp  */
-#line 542 "parser.y"
+#line 548 "parser.y"
          {
     (yyval.addExp) = new AddExpAST();
     (yyval.addExp)->mulExp = unique_ptr<MulExpAST>((yyvsp[0].mulExp));
@@ -2107,7 +2107,7 @@ yyreduce:
     break;
 
   case 78: /* AddExp: AddExp ADD MulExp  */
-#line 546 "parser.y"
+#line 552 "parser.y"
                     {
     (yyval.addExp) = new AddExpAST();
     (yyval.addExp)->addExp = unique_ptr<AddExpAST>((yyvsp[-2].addExp));
@@ -2118,7 +2118,7 @@ yyreduce:
     break;
 
   case 79: /* AddExp: AddExp MINUS MulExp  */
-#line 552 "parser.y"
+#line 558 "parser.y"
                       {
     (yyval.addExp) = new AddExpAST();
     (yyval.addExp)->addExp = unique_ptr<AddExpAST>((yyvsp[-2].addExp));
@@ -2129,7 +2129,7 @@ yyreduce:
     break;
 
   case 80: /* RelExp: AddExp  */
-#line 561 "parser.y"
+#line 567 "parser.y"
          {
     (yyval.relExp) = new RelExpAST();
     (yyval.relExp)->addExp = unique_ptr<AddExpAST>((yyvsp[0].addExp));
@@ -2138,7 +2138,7 @@ yyreduce:
     break;
 
   case 81: /* RelExp: RelExp GTE AddExp  */
-#line 565 "parser.y"
+#line 571 "parser.y"
                     {
     (yyval.relExp) = new RelExpAST();
     (yyval.relExp)->relExp = unique_ptr<RelExpAST>((yyvsp[-2].relExp));
@@ -2149,7 +2149,7 @@ yyreduce:
     break;
 
   case 82: /* RelExp: RelExp LTE AddExp  */
-#line 571 "parser.y"
+#line 577 "parser.y"
                     {
     (yyval.relExp) = new RelExpAST();
     (yyval.relExp)->relExp = unique_ptr<RelExpAST>((yyvsp[-2].relExp));
@@ -2160,7 +2160,7 @@ yyreduce:
     break;
 
   case 83: /* RelExp: RelExp GT AddExp  */
-#line 577 "parser.y"
+#line 583 "parser.y"
                    {
     (yyval.relExp) = new RelExpAST();
     (yyval.relExp)->relExp = unique_ptr<RelExpAST>((yyvsp[-2].relExp));
@@ -2171,7 +2171,7 @@ yyreduce:
     break;
 
   case 84: /* RelExp: RelExp LT AddExp  */
-#line 583 "parser.y"
+#line 589 "parser.y"
                    {
     (yyval.relExp) = new RelExpAST();
     (yyval.relExp)->relExp = unique_ptr<RelExpAST>((yyvsp[-2].relExp));
@@ -2182,7 +2182,7 @@ yyreduce:
     break;
 
   case 85: /* EqExp: RelExp  */
-#line 592 "parser.y"
+#line 598 "parser.y"
          {
     (yyval.eqExp) = new EqExpAST();
     (yyval.eqExp)->relExp = unique_ptr<RelExpAST>((yyvsp[0].relExp));
@@ -2191,7 +2191,7 @@ yyreduce:
     break;
 
   case 86: /* EqExp: EqExp EQ RelExp  */
-#line 596 "parser.y"
+#line 602 "parser.y"
                   {
     (yyval.eqExp) = new EqExpAST();
     (yyval.eqExp)->eqExp = unique_ptr<EqExpAST>((yyvsp[-2].eqExp));
@@ -2202,7 +2202,7 @@ yyreduce:
     break;
 
   case 87: /* EqExp: EqExp NEQ RelExp  */
-#line 602 "parser.y"
+#line 608 "parser.y"
                    {
     (yyval.eqExp) = new EqExpAST();
     (yyval.eqExp)->eqExp = unique_ptr<EqExpAST>((yyvsp[-2].eqExp));
@@ -2213,7 +2213,7 @@ yyreduce:
     break;
 
   case 88: /* LAndExp: EqExp  */
-#line 611 "parser.y"
+#line 617 "parser.y"
         {
     (yyval.lAndExp) = new LAndExpAST();
     (yyval.lAndExp)->eqExp = unique_ptr<EqExpAST>((yyvsp[0].eqExp));
@@ -2222,7 +2222,7 @@ yyreduce:
     break;
 
   case 89: /* LAndExp: LAndExp AND EqExp  */
-#line 615 "parser.y"
+#line 621 "parser.y"
                     {
     (yyval.lAndExp) = new LAndExpAST();
     (yyval.lAndExp)->lAndExp = unique_ptr<LAndExpAST>((yyvsp[-2].lAndExp));
@@ -2232,7 +2232,7 @@ yyreduce:
     break;
 
   case 90: /* LOrExp: LAndExp  */
-#line 623 "parser.y"
+#line 629 "parser.y"
           {
     (yyval.lOrExp) = new LOrExpAST();
     (yyval.lOrExp)->lAndExp = unique_ptr<LAndExpAST>((yyvsp[0].lAndExp));
@@ -2241,7 +2241,7 @@ yyreduce:
     break;
 
   case 91: /* LOrExp: LOrExp OR LAndExp  */
-#line 627 "parser.y"
+#line 633 "parser.y"
                     {
     (yyval.lOrExp) = new LOrExpAST();
     (yyval.lOrExp)->lOrExp = unique_ptr<LOrExpAST>((yyvsp[-2].lOrExp));
@@ -2449,7 +2449,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 634 "parser.y"
+#line 640 "parser.y"
 
 
 void initFileName(char *name) {
