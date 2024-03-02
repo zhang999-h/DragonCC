@@ -5,6 +5,7 @@
 #include "define.h"
 #include "parser.hpp"
 #include "tokens.hpp"
+#include "codegen.h"
 using namespace std;
 extern unique_ptr<CompUnitAST> root;
 
@@ -21,5 +22,6 @@ int main(int argc, char** argv) {
         return -1;
     }
     yyparse();
+    GenIR genir;
 
 }
