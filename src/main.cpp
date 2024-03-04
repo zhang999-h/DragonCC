@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     std::cout << "Hello, from DragonCC!\n\n";
     char* filename = nullptr;
     filename = argv[1];
-    printf("open : %s\n", filename);
+    //printf("open : %s\n", filename);
     cout << argc;
     yyin = fopen(filename, "r");
     if (yyin == nullptr) {
@@ -23,5 +23,8 @@ int main(int argc, char** argv) {
     }
     yyparse();
     GenIR genir;
+    root->accept(genir);
+    errs()<<"print LLVM IR:\n";
+    genir.printIR();
 
 }
