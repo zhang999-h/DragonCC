@@ -15,26 +15,30 @@ private:
     std::unique_ptr<LLVMContext> TheContext;
     std::unique_ptr<IRBuilder<>> Builder;
     std::unique_ptr<Module> TheModule;
+    Function* TheFunction;
     std::map<std::string, AllocaInst*> NamedValues;
+    Type* curType;//当前解析的变量定义的类型
+    AllocaInst* recentAllocaInst;
+    Value* recentVal;
 public:
 
     GenIR(/* args */);
     ~GenIR();
-    void visit(CompUnitAST& ast) override ;
-    void visit(DeclDefAST& ast) override ;
-    void visit(DeclAST& ast) override ;
-    void visit(DefAST& ast) override {};
+    void visit(CompUnitAST& ast) override;
+    void visit(DeclDefAST& ast) override;
+    void visit(DeclAST& ast) override;
+    void visit(DefAST& ast) override;
     void visit(InitValAST& ast) override {};
-    void visit(FuncDefAST& ast) override ;
+    void visit(FuncDefAST& ast) override;
     void visit(FuncFParamAST& ast) override {};
-    void visit(BlockAST& ast) override ;
-    void visit(BlockItemAST& ast) override ;
-    void visit(StmtAST& ast) override {};
+    void visit(BlockAST& ast) override;
+    void visit(BlockItemAST& ast) override;
+    void visit(StmtAST& ast) override ;
     void visit(ReturnStmtAST& ast) override {};
     void visit(SelectStmtAST& ast) override {};
     void visit(IterationStmtAST& ast) override {};
     void visit(AddExpAST& ast) override;
-    void visit(LValAST& ast) override {};
+    void visit(LValAST& ast) override ;
     void visit(MulExpAST& ast) override;
     void visit(UnaryExpAST& ast) override;
     void visit(PrimaryExpAST& ast) override;

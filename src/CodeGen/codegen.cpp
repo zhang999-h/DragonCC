@@ -1,4 +1,8 @@
 #include "codegen.h"
+
+#define INT32_TYPE (Type::getInt32Ty(*TheContext))
+#define FLOAT_TYPE (Type::getFloatTy(*TheContext))
+
 GenIR::GenIR(/* args */)
 {
     TheContext = std::make_unique<LLVMContext>();
@@ -37,15 +41,25 @@ void GenIR::visit(FuncDefAST& ast) {
 
     Function* F =
         Function::Create(FT, Function::ExternalLinkage, *(ast.id.get()), TheModule.get());
+    TheFunction = F;
+    BasicBlock* BB = BasicBlock::Create(*TheContext, "entry", F);
+    Builder->SetInsertPoint(BB);
     ast.block->accept(*this);
 }
 
 void GenIR::visit(DeclAST& ast) {
     //   isConst = ast.isConst;
-    //   curType = ast.bType == TYPE_INT ? INT32_T : FLOAT_T;
+    curType = ast.bType == TYPE_INT ? INT32_TYPE : FLOAT_TYPE;
     for (auto& def : ast.defList) {
         def->accept(*this);
     }
+}
+
+void GenIR::visit(DefAST& ast) {
+
+    AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()));
+    NamedValues[*(ast.id.get())] = Alloca;
+
 }
 
 void GenIR::visit(BlockAST& ast) {
@@ -56,12 +70,11 @@ void GenIR::visit(BlockAST& ast) {
     //   else {
     //     scope.enter();
     //   }
-    //   // 遍历每一个语句块
-    //   for (auto &item : ast.blockItemList) {
-    //     if (has_br)
-    //       break; // 此BB已经出现了br，后续指令无效
-    //     item->accept(*this);
-    //   }
+
+      // 遍历每一个语句块
+    for (auto& item : ast.blockItemList) {
+        item->accept(*this);
+    }
 
     //   scope.exit();
 }
@@ -73,6 +86,44 @@ void GenIR::visit(BlockItemAST& ast) {
     else {
         ast.stmt->accept(*this);
     }
+}
+
+void GenIR::visit(StmtAST& ast) {
+    switch (ast.sType) {
+    case SEMI:
+        break;
+    case ASS: {
+        // Visit lVal
+        ast.lVal->accept(*this);
+        // Get lVal
+        auto lVal = recentAllocaInst;
+
+        // Visit expression
+        ast.exp->accept(*this);
+        auto rVal = recentVal;
+        // if lVal.type != rVal.type
+        // Forge a cast
+        // if (lValType != recentVal->type_) {
+        //     if (lValType == FLOAT_TYPE) {
+        //         rVal = builder->create_sitofp(recentVal, FLOAT_TYPE);
+        //     }
+        //     else {
+        //         rVal = builder->create_fptosi(recentVal, INT32_TYPE);
+        //     }
+        // }
+        // Create a store primitive
+        Builder->CreateStore(recentVal, lVal);
+        break;
+    }
+
+    }
+}
+
+void GenIR::visit(LValAST& ast) {
+    AllocaInst* A = NamedValues[*(ast.id.get())];
+    // Load the value.
+    //Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
+    recentAllocaInst = A;
 }
 
 
@@ -104,7 +155,7 @@ void GenIR::visit(PrimaryExpAST& ast) {
 
 void GenIR::visit(NumberAST& ast) {
     if (ast.isInt) {
-        //ConstantInt::get(*TheContext, APInt(ast.intval));
+        recentVal = ConstantInt::get(INT32_TYPE, ast.intval);
     }
     //recentVal = CONST_INT(ast.intval);
 
