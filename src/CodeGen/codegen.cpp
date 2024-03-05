@@ -112,7 +112,7 @@ void GenIR::visit(StmtAST& ast) {
         //     }
         // }
         // Create a store primitive
-        Builder->CreateStore(recentVal, lVal);
+        Builder->CreateStore(rVal, lVal);
         break;
     }
 
@@ -122,8 +122,9 @@ void GenIR::visit(StmtAST& ast) {
 void GenIR::visit(LValAST& ast) {
     AllocaInst* A = NamedValues[*(ast.id.get())];
     // Load the value.
-    //Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
+    Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
     recentAllocaInst = A;
+    recentVal = t;
 }
 
 
@@ -149,7 +150,15 @@ void GenIR::visit(UnaryExpAST& ast) {
 
 void GenIR::visit(PrimaryExpAST& ast) {
 
-    ast.number->accept(*this);
+    if (ast.exp) {
+        ast.exp->accept(*this);
+    }
+    else if (ast.lval) {
+        ast.lval->accept(*this);
+    }
+    else if (ast.number) {
+        ast.number->accept(*this);
+    }
 
 }
 
