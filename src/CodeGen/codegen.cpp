@@ -94,6 +94,7 @@ void GenIR::visit(StmtAST& ast) {
         break;
     case ASS: {
         // Visit lVal
+        isLVal=true;
         ast.lVal->accept(*this);
         // Get lVal
         auto lVal = recentAllocaInst;
@@ -121,10 +122,18 @@ void GenIR::visit(StmtAST& ast) {
 
 void GenIR::visit(LValAST& ast) {
     AllocaInst* A = NamedValues[*(ast.id.get())];
-    // Load the value.
-    Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
-    recentAllocaInst = A;
-    recentVal = t;
+    // right value.
+    if(!isLVal){
+        Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
+        recentVal = t;
+        
+    }
+    // left value
+    else{
+        recentAllocaInst = A;
+    }
+    isLVal=false;
+    
 }
 
 
@@ -152,6 +161,7 @@ void GenIR::visit(PrimaryExpAST& ast) {
 
     if (ast.exp) {
         ast.exp->accept(*this);
+        
     }
     else if (ast.lval) {
         ast.lval->accept(*this);

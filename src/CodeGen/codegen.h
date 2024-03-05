@@ -20,6 +20,7 @@ private:
     Type* curType;//当前解析的变量定义的类型
     AllocaInst* recentAllocaInst;
     Value* recentVal;
+    bool isLVal;
 public:
 
     GenIR(/* args */);
