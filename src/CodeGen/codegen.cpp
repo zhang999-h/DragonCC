@@ -94,7 +94,7 @@ void GenIR::visit(StmtAST& ast) {
         break;
     case ASS: {
         // Visit lVal
-        isLVal=true;
+        isLVal = true;
         ast.lVal->accept(*this);
         // Get lVal
         auto lVal = recentAllocaInst;
@@ -123,17 +123,17 @@ void GenIR::visit(StmtAST& ast) {
 void GenIR::visit(LValAST& ast) {
     AllocaInst* A = NamedValues[*(ast.id.get())];
     // right value.
-    if(!isLVal){
+    if (!isLVal) {
         Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
         recentVal = t;
-        
+
     }
     // left value
-    else{
+    else {
         recentAllocaInst = A;
     }
-    isLVal=false;
-    
+    isLVal = false;
+
 }
 
 
@@ -142,6 +142,21 @@ void GenIR::visit(AddExpAST& ast) {
         ast.mulExp->accept(*this);
         return;
     }
+
+    Value* val[2]; // lVal, rVal
+    ast.addExp->accept(*this);
+    val[0] = recentVal;
+    ast.mulExp->accept(*this);
+    val[1] = recentVal;
+    //TODO ： 类型转换
+    switch (ast.op) {
+    case AOP_ADD:
+        recentVal = Builder->CreateAdd(val[0], val[1]);
+        break;
+    case AOP_MINUS:
+        recentVal = Builder->CreateSub(val[0], val[1]);
+        break;
+    }
 }
 
 void GenIR::visit(MulExpAST& ast) {
@@ -149,6 +164,25 @@ void GenIR::visit(MulExpAST& ast) {
         ast.unaryExp->accept(*this);
         return;
     }
+
+    Value* val[2]; // lVal, rVal
+    ast.mulExp->accept(*this);
+    val[0] = recentVal;
+    ast.unaryExp->accept(*this);
+    val[1] = recentVal;
+    //TODO ： 类型转换
+    switch (ast.op) {
+    case MOP_MUL:
+        recentVal = Builder->CreateAdd(val[0], val[1]);
+        break;
+    case MOP_DIV:
+        recentVal = Builder->CreateSub(val[0], val[1]);
+        break;
+    case MOP_MOD:
+        recentVal = Builder->CreateSRem(val[0], val[1]);
+        break;
+    }
+
 }
 void GenIR::visit(UnaryExpAST& ast) {
 
@@ -161,7 +195,7 @@ void GenIR::visit(PrimaryExpAST& ast) {
 
     if (ast.exp) {
         ast.exp->accept(*this);
-        
+
     }
     else if (ast.lval) {
         ast.lval->accept(*this);
