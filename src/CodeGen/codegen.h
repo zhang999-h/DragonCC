@@ -29,7 +29,7 @@ public:
     void visit(DeclDefAST& ast) override;
     void visit(DeclAST& ast) override;
     void visit(DefAST& ast) override;
-    void visit(InitValAST& ast) override {};
+    void visit(InitValAST& ast) override ;
     void visit(FuncDefAST& ast) override;
     void visit(FuncFParamAST& ast) override {};
     void visit(BlockAST& ast) override;

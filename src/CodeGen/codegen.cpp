@@ -56,10 +56,22 @@ void GenIR::visit(DeclAST& ast) {
 }
 
 void GenIR::visit(DefAST& ast) {
-
+    string var_name=*(ast.id.get());
     AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()));
     NamedValues[*(ast.id.get())] = Alloca;
+    if(ast.initVal){
+        ast.initVal->accept(*this);
+        Builder->CreateStore(recentVal,Alloca);
+    }
+    
 
+}
+
+void GenIR::visit(InitValAST &ast) {
+  // 不是数组则求exp的值，若是数组不会进入此函数
+  if (ast.exp != nullptr) {
+    ast.exp->accept(*this);
+  }
 }
 
 void GenIR::visit(BlockAST& ast) {
