@@ -1,7 +1,7 @@
 #include "scope.h"
 
 void Scope::Enter(){
-    Vars.push_back(map<std::string,llvm::AllocaInst*>());
+    Vars.push_back(std::map<std::string,llvm::AllocaInst*>());
 }
 void Scope::Leave(){
     Vars.pop_back();
