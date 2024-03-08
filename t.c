@@ -1,11 +1,14 @@
 int main(){
-     int x,y=11;
-     {
-        int x=33;
-     }
-     x=8+9;
-     y=x%9;
-    // return x;
+    int x=1,y=4;
+    float f=1;
+    if(y=(f+1&&x>1)){
+        x=1;
+    }
+    else{
+        x=2;
+    }
+    return x;
+    //8;
 }
 /*************************
 

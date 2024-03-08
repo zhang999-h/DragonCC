@@ -237,3 +237,122 @@ void GenIR::visit(NumberAST& ast) {
     //recentVal = CONST_INT(ast.intval);
 
 }
+
+void GenIR::visit(RelExpAST &ast) {
+  if (ast.relExp == nullptr) {
+    ast.addExp->accept(*this);
+    return;
+  }
+  Value *val[2];
+  ast.relExp->accept(*this);
+  val[0] = recentVal;
+  ast.addExp->accept(*this);
+  val[1] = recentVal;
+  checkCalType(val);
+  if (val[0]->type_ == INT32_T) {
+    switch (ast.op) {
+    case ROP_LTE:
+      recentVal = builder->create_icmp_le(val[0], val[1]);
+      break;
+    case ROP_LT:
+      recentVal = builder->create_icmp_lt(val[0], val[1]);
+      break;
+    case ROP_GT:
+      recentVal = builder->create_icmp_gt(val[0], val[1]);
+      break;
+    case ROP_GTE:
+      recentVal = builder->create_icmp_ge(val[0], val[1]);
+      break;
+    }
+  } else {
+    switch (ast.op) {
+    case ROP_LTE:
+      recentVal = builder->create_fcmp_le(val[0], val[1]);
+      break;
+    case ROP_LT:
+      recentVal = builder->create_fcmp_lt(val[0], val[1]);
+      break;
+    case ROP_GT:
+      recentVal = builder->create_fcmp_gt(val[0], val[1]);
+      break;
+    case ROP_GTE:
+      recentVal = builder->create_fcmp_ge(val[0], val[1]);
+      break;
+    }
+  }
+}
+
+void GenIR::visit(EqExpAST &ast) {
+  if (ast.eqExp == nullptr) {
+    ast.relExp->accept(*this);
+    return;
+  }
+  Value *val[2];
+  ast.eqExp->accept(*this);
+  val[0] = recentVal;
+  ast.relExp->accept(*this);
+  val[1] = recentVal;
+  checkCalType(val);
+  if (val[0]->type_ == INT32_T) {
+    switch (ast.op) {
+    case EOP_EQ:
+      recentVal = builder->create_icmp_eq(val[0], val[1]);
+      break;
+    case EOP_NEQ:
+      recentVal = builder->create_icmp_ne(val[0], val[1]);
+      break;
+    }
+  } else {
+    switch (ast.op) {
+    case EOP_EQ:
+      recentVal = builder->create_fcmp_eq(val[0], val[1]);
+      break;
+    case EOP_NEQ:
+      recentVal = builder->create_fcmp_ne(val[0], val[1]);
+      break;
+    }
+  }
+}
+
+void GenIR::visit(LAndExpAST &ast) {
+  if (ast.lAndExp == nullptr) {
+    ast.eqExp->accept(*this);
+    return;
+  }
+  auto tempTrue = trueBB; // 防止嵌套and导致原trueBB丢失。用于生成短路模块
+  trueBB = new BasicBlock(module.get(), to_string(id++), currentFunction);
+  ast.lAndExp->accept(*this);
+
+  if (recentVal->type_ == INT32_T) {
+    recentVal = builder->create_icmp_ne(recentVal, CONST_INT(0));
+  } else if (recentVal->type_ == FLOAT_T) {
+    recentVal = builder->create_fcmp_ne(recentVal, CONST_FLOAT(0));
+  }
+  builder->create_cond_br(recentVal, trueBB, falseBB);
+  builder->BB_ = trueBB;
+  has_br = false;
+  trueBB = tempTrue; // 还原原来的true模块
+
+  ast.eqExp->accept(*this);
+}
+
+void GenIR::visit(LOrExpAST &ast) {
+  if (ast.lOrExp == nullptr) {
+    ast.lAndExp->accept(*this);
+    return;
+  }
+  auto tempFalse = falseBB; // 防止嵌套and导致原trueBB丢失。用于生成短路模块
+  falseBB = new BasicBlock(module.get(), to_string(id++), currentFunction);
+  ast.lOrExp->accept(*this);
+  if (recentVal->type_ == INT32_T) {
+    recentVal = builder->create_icmp_ne(recentVal, CONST_INT(0));
+  } else if (recentVal->type_ == FLOAT_T) {
+    recentVal = builder->create_fcmp_ne(recentVal, CONST_FLOAT(0));
+  }
+  builder->create_cond_br(recentVal, trueBB, falseBB);
+  builder->BB_ = falseBB;
+  has_br = false;
+  falseBB = tempFalse;
+
+  ast.lAndExp->accept(*this);
+}
