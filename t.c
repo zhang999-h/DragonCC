@@ -1,5 +1,8 @@
 int main(){
      int x,y=11;
+     {
+        int x=33;
+     }
      x=8+9;
      y=x%9;
     // return x;

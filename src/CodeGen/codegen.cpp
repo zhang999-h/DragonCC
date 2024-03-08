@@ -49,7 +49,7 @@ void GenIR::visit(FuncDefAST& ast) {
     BasicBlock* BB = BasicBlock::Create(*TheContext, "entry", F);
     Builder->SetInsertPoint(BB);
     ast.block->accept(*this);
-    
+
 }
 
 void GenIR::visit(DeclAST& ast) {
@@ -134,12 +134,17 @@ void GenIR::visit(StmtAST& ast) {
         Builder->CreateStore(rVal, lVal);
         break;
     }
+    case EXP:
+        ast.exp->accept(*this);
+    case BLK:
+        ast.block->accept(*this);
+        break;
 
     }
 }
 
 void GenIR::visit(LValAST& ast) {
-    string var_name=*(ast.id);
+    string var_name = *(ast.id);
     AllocaInst* A = scope.FindVar(var_name);
     // right value.
     if (!isLVal) {
