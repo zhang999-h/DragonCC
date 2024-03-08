@@ -16,11 +16,12 @@ private:
     std::unique_ptr<IRBuilder<>> Builder;
     std::unique_ptr<Module> TheModule;
     Function* TheFunction;
-    std::map<std::string, AllocaInst*> NamedValues;
+    
     Type* curType;//当前解析的变量定义的类型
     AllocaInst* recentAllocaInst;
     Value* recentVal;
     bool isLVal;
+    bool isNewFunc;
 public:
 
     GenIR(/* args */);

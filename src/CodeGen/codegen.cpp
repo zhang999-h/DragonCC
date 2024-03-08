@@ -1,4 +1,5 @@
 #include "codegen.h"
+#include "scope.h"
 
 #define INT32_TYPE (Type::getInt32Ty(*TheContext))
 #define FLOAT_TYPE (Type::getFloatTy(*TheContext))
@@ -11,6 +12,8 @@ GenIR::GenIR(/* args */)
 
     // Create a new builder for the module.
     Builder = std::make_unique<IRBuilder<>>(*TheContext);
+
+    isNewFunc = false;
 }
 
 GenIR::~GenIR()
@@ -36,6 +39,7 @@ void GenIR::visit(FuncDefAST& ast) {
     // Make the function type:  double(double,double) etc.
     // std::vector<Type*> Doubles(Args.size(),
     //     Type::getDoubleTy(*TheContext));
+    scope.Enter();
     FunctionType* FT =
         FunctionType::get(Type::getInt32Ty(*TheContext), false);
 
@@ -45,6 +49,7 @@ void GenIR::visit(FuncDefAST& ast) {
     BasicBlock* BB = BasicBlock::Create(*TheContext, "entry", F);
     Builder->SetInsertPoint(BB);
     ast.block->accept(*this);
+    
 }
 
 void GenIR::visit(DeclAST& ast) {
@@ -56,39 +61,40 @@ void GenIR::visit(DeclAST& ast) {
 }
 
 void GenIR::visit(DefAST& ast) {
-    string var_name=*(ast.id.get());
+    string var_name = *(ast.id.get());
     AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()));
-    NamedValues[*(ast.id.get())] = Alloca;
-    if(ast.initVal){
+    //NamedValues[*(ast.id.get())] = Alloca;
+    scope.AddNewVar(var_name, Alloca);
+    if (ast.initVal) {
         ast.initVal->accept(*this);
-        Builder->CreateStore(recentVal,Alloca);
+        Builder->CreateStore(recentVal, Alloca);
     }
-    
+
 
 }
 
-void GenIR::visit(InitValAST &ast) {
-  // 不是数组则求exp的值，若是数组不会进入此函数
-  if (ast.exp != nullptr) {
-    ast.exp->accept(*this);
-  }
+void GenIR::visit(InitValAST& ast) {
+    // 不是数组则求exp的值，若是数组不会进入此函数
+    if (ast.exp != nullptr) {
+        ast.exp->accept(*this);
+    }
 }
 
 void GenIR::visit(BlockAST& ast) {
-    //   // 如果是一个新的函数，则不用再进入一个新的作用域
-    //   if (isNewFunc)
-    //     isNewFunc = false;
-    //   // 其它情况，需要进入一个新的作用域
-    //   else {
-    //     scope.enter();
-    //   }
+    // 如果是一个新的函数，则不用再进入一个新的作用域
+    if (isNewFunc)
+        isNewFunc = false;
+    // 其它情况，需要进入一个新的作用域
+    else {
+        scope.Enter();
+    }
 
-      // 遍历每一个语句块
+    // 遍历每一个语句块
     for (auto& item : ast.blockItemList) {
         item->accept(*this);
     }
 
-    //   scope.exit();
+    scope.Leave();
 }
 
 void GenIR::visit(BlockItemAST& ast) {
@@ -133,10 +139,11 @@ void GenIR::visit(StmtAST& ast) {
 }
 
 void GenIR::visit(LValAST& ast) {
-    AllocaInst* A = NamedValues[*(ast.id.get())];
+    string var_name=*(ast.id);
+    AllocaInst* A = scope.FindVar(var_name);
     // right value.
     if (!isLVal) {
-        Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id.get())).c_str());
+        Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id)).c_str());
         recentVal = t;
 
     }
