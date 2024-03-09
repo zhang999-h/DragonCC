@@ -3,6 +3,7 @@
 
 #define INT32_TYPE (Type::getInt32Ty(*TheContext))
 #define FLOAT_TYPE (Type::getFloatTy(*TheContext))
+#define VOID_TYPE (Type::getVoidTy(*TheContext))
 
 GenIR::GenIR(/* args */)
 {
@@ -40,16 +41,34 @@ void GenIR::visit(FuncDefAST& ast) {
   // std::vector<Type*> Doubles(Args.size(),
   //     Type::getDoubleTy(*TheContext));
   scope.Enter();
+  auto ret_type = INT32_TYPE;
   FunctionType* FT =
-    FunctionType::get(Type::getInt32Ty(*TheContext), false);
+    FunctionType::get(ret_type, false);
 
   Function* F =
     Function::Create(FT, Function::ExternalLinkage, *(ast.id.get()), TheModule.get());
   TheFunction = F;
   BasicBlock* BB = BasicBlock::Create(*TheContext, "entry", F);
+  // 创建统一return分支
+  retBB = BasicBlock::Create(*TheContext, "label_ret", F);
+
+  retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca");
+  Builder->SetInsertPoint(retBB);
+  auto ret_load = Builder->CreateLoad(retAlloca->getType(), retAlloca, "ret_val");
+  Builder->CreateRet(ret_load);
+  // if (retType == VOID_T) {//TODO
+  //   // void类型无需返回值
+  //   builder->BB_ = retBB;
+  //   builder->create_void_ret();
+  // } else {
+  //   retAlloca = builder->create_alloca(retType); // 在内存中分配返回值的位置
+  //   builder->BB_ = retBB;
+  //   auto retLoad = builder->create_load(retAlloca);
+  //   builder->create_ret(retLoad);
+  // }
   Builder->SetInsertPoint(BB);
   ast.block->accept(*this);
-
+  retBB->moveAfter(&TheFunction->back());
 }
 
 void GenIR::visit(DeclAST& ast) {
@@ -141,6 +160,36 @@ void GenIR::visit(StmtAST& ast) {
     break;
   case SEL:
     ast.selectStmt->accept(*this);
+    break;
+  case RET:
+    ast.returnStmt->accept(*this);
+    break;
+  }
+}
+
+void GenIR::visit(ReturnStmtAST& ast) {
+  if (ast.exp == nullptr) {
+    Builder->CreateStore(0, retAlloca);
+    recentVal = Builder->CreateBr(retBB);
+  }
+  else {
+    // 先把返回值store在retAlloca中，再跳转到统一的返回入口
+    ast.exp->accept(*this);
+    Builder->CreateStore(recentVal, retAlloca);
+    // TODO:类型转换
+    // if (recentVal->type_ == FLOAT_T &&
+    //   currentFunction->get_return_type() == INT32_T) {
+    //   auto temp = builder->create_fptosi(recentVal, INT32_T);
+    //   builder->create_store(temp, retAlloca);
+    // }
+    // else if (recentVal->type_ == INT32_T &&
+    //   currentFunction->get_return_type() == FLOAT_T) {
+    //   auto temp = builder->create_sitofp(recentVal, FLOAT_T);
+    //   builder->create_store(temp, retAlloca);
+    // }
+    // else
+    //   builder->create_store(recentVal, retAlloca);
+    recentVal = Builder->CreateBr(retBB);
   }
 }
 
@@ -151,7 +200,7 @@ void GenIR::visit(SelectStmtAST& ast) {
   BasicBlock* EndBB = BasicBlock::Create(*TheContext, "if.end");
   BasicBlock* NextBB, * ElseBB;
   if (ast.elseStmt) {
-    ElseBB = BasicBlock::Create(*TheContext, "if.else",TheFunction);
+    ElseBB = BasicBlock::Create(*TheContext, "if.else", TheFunction);
     NextBB = ElseBB;
   }
   else {
@@ -167,7 +216,7 @@ void GenIR::visit(SelectStmtAST& ast) {
     ast.elseStmt->accept(*this);
     Builder->CreateBr(EndBB);
   }
-  TheFunction->insert(TheFunction->end(),EndBB);
+  TheFunction->insert(TheFunction->end(), EndBB);
   Builder->SetInsertPoint(EndBB);
 
 
@@ -325,7 +374,7 @@ void GenIR::visit(EqExpAST& ast) {
   ast.relExp->accept(*this);
   val[1] = recentVal;
   //checkCalType(val);
-  if (val[0]->getType()->isIntegerTy(32) && val[1]->getType()->isIntegerTy(32))  {
+  if (val[0]->getType()->isIntegerTy(32) && val[1]->getType()->isIntegerTy(32)) {
     switch (ast.op) {
     case EOP_EQ:
       recentVal = Builder->CreateICmpEQ(val[0], val[1]);

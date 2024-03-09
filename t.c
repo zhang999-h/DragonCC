@@ -3,11 +3,12 @@ int main(){
     float f=1;
     if(x>1){
         x=1;
+        return 0;
     }
     else{
         x=2;
     }
-    //return x;
+    return x;
     //8;
 }
 /*************************

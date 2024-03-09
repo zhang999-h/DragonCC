@@ -22,6 +22,8 @@ private:
     Value* recentVal;
     bool isLVal;
     bool isNewFunc;
+    BasicBlock* retBB;
+    AllocaInst* retAlloca;
 public:
 
     GenIR(/* args */);
@@ -36,7 +38,7 @@ public:
     void visit(BlockAST& ast) override;
     void visit(BlockItemAST& ast) override;
     void visit(StmtAST& ast) override ;
-    void visit(ReturnStmtAST& ast) override {};
+    void visit(ReturnStmtAST& ast) override ;
     void visit(SelectStmtAST& ast) override ;
     void visit(IterationStmtAST& ast) override {};
     void visit(AddExpAST& ast) override;
