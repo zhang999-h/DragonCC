@@ -1,14 +1,9 @@
+//const int y=10;
 int main(){
-    int x=1;
-    float f=1;
-    if(x>1){
-        x=1;
-        return 0;
-    }
-    else{
-        x=2;
-    }
-    return x;
+    //int x=1;
+    int a[10][5];
+    // a[5]=55;
+    // return a[5];
     //8;
 }
 /*************************

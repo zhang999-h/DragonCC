@@ -52,7 +52,7 @@ void GenIR::visit(FuncDefAST& ast) {
   // 创建统一return分支
   retBB = BasicBlock::Create(*TheContext, "label_ret", F);
 
-  retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca",ret_type);
+  retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca", ret_type);
   Builder->SetInsertPoint(retBB);
   auto ret_load = Builder->CreateLoad(retAlloca->getType(), retAlloca, "ret_val");
   Builder->CreateRet(ret_load);
@@ -81,12 +81,42 @@ void GenIR::visit(DeclAST& ast) {
 
 void GenIR::visit(DefAST& ast) {
   string var_name = *(ast.id.get());
-  AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()),curType);
-  //NamedValues[*(ast.id.get())] = Alloca;
-  scope.AddNewVar(var_name, Alloca);
-  if (ast.initVal) {
-    ast.initVal->accept(*this);
-    Builder->CreateStore(recentVal, Alloca);
+  if (ast.arrays.empty()) {//常量
+    AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()), curType);
+    //NamedValues[*(ast.id.get())] = Alloca;
+    scope.AddNewVar(var_name, Alloca);
+    if (ast.initVal) {
+      ast.initVal->accept(*this);
+      Builder->CreateStore(recentVal, Alloca);
+    }
+  }
+  else {//数组
+    int arr_dim = ast.arrays.size(), len;
+    ArrayType* ATy;
+    // 创建局部数组
+    for (int i = arr_dim-1;i >= 0;i--) {
+      ast.arrays[i]->accept(*this);
+      // 将 Value 转换为 ConstantInt
+      ConstantInt* constantInt = dyn_cast<ConstantInt>(recentVal);
+      // 检查是否转换成功
+
+        // 获取整数值
+      APInt intValue = constantInt->getValue();
+      // 将整数值转换为 int 类型
+      len = static_cast<int>(intValue.getSExtValue()); // 或者使用 getZExtValue() 方法转换为无符号值
+      if (i == arr_dim-1) {
+        ATy = ArrayType::get(curType, len);
+      }
+      else {
+        ATy = ArrayType::get(ATy, len);
+      }
+    }
+    auto arrayAlloc = CreateEntryBlockAlloca(TheFunction, var_name, ATy);
+    scope.AddNewVar(var_name, arrayAlloc);
+    if (!ast.initVal) {//没有初始化返回
+      
+      return ;
+    }
   }
 
 
