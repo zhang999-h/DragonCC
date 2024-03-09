@@ -52,7 +52,7 @@ void GenIR::visit(FuncDefAST& ast) {
   // 创建统一return分支
   retBB = BasicBlock::Create(*TheContext, "label_ret", F);
 
-  retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca");
+  retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca",ret_type);
   Builder->SetInsertPoint(retBB);
   auto ret_load = Builder->CreateLoad(retAlloca->getType(), retAlloca, "ret_val");
   Builder->CreateRet(ret_load);
@@ -81,7 +81,7 @@ void GenIR::visit(DeclAST& ast) {
 
 void GenIR::visit(DefAST& ast) {
   string var_name = *(ast.id.get());
-  AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()));
+  AllocaInst* Alloca = CreateEntryBlockAlloca(TheFunction, *(ast.id.get()),curType);
   //NamedValues[*(ast.id.get())] = Alloca;
   scope.AddNewVar(var_name, Alloca);
   if (ast.initVal) {

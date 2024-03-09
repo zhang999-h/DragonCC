@@ -55,10 +55,10 @@ public:
 
     void printIR();
 
-    AllocaInst* CreateEntryBlockAlloca(Function* TheFunction, StringRef VarName) {
+    AllocaInst* CreateEntryBlockAlloca(Function* TheFunction, StringRef VarName,Type* Ty) {
         IRBuilder<> TmpB(&TheFunction->getEntryBlock(),
             TheFunction->getEntryBlock().begin());
-        return TmpB.CreateAlloca(Type::getInt32Ty(*TheContext), nullptr, VarName);
+        return TmpB.CreateAlloca(Ty, nullptr, VarName);
     }
 
 };
