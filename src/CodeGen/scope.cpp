@@ -16,7 +16,7 @@ void Scope::AddNewVar(std::string id, llvm::AllocaInst* alloca){
 };
 llvm::AllocaInst* Scope::FindVar(std::string id){
     int size=Vars.size();
-    for(int i=size-1;i>0;i++){
+    for(int i=size-1;i>0;i--){
         auto tmp=Vars[i].find(id);
         if(tmp!=Vars[i].end()){
             return tmp->second;

@@ -1,13 +1,13 @@
 int main(){
-    int x=1,y=4;
+    int x=1;
     float f=1;
-    if(y=(f+1&&x>1)){
+    if(x>1){
         x=1;
     }
     else{
         x=2;
     }
-    return x;
+    //return x;
     //8;
 }
 /*************************

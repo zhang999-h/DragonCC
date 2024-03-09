@@ -37,7 +37,7 @@ public:
     void visit(BlockItemAST& ast) override;
     void visit(StmtAST& ast) override ;
     void visit(ReturnStmtAST& ast) override {};
-    void visit(SelectStmtAST& ast) override {};
+    void visit(SelectStmtAST& ast) override ;
     void visit(IterationStmtAST& ast) override {};
     void visit(AddExpAST& ast) override;
     void visit(LValAST& ast) override ;
@@ -46,10 +46,10 @@ public:
     void visit(PrimaryExpAST& ast) override;
     void visit(CallAST& ast) override {};
     void visit(NumberAST& ast) override;
-    void visit(RelExpAST& ast) override {};
-    void visit(EqExpAST& ast) override {};
-    void visit(LAndExpAST& ast) override {};
-    void visit(LOrExpAST& ast) override {};
+    void visit(RelExpAST& ast) override ;
+    void visit(EqExpAST& ast) override ;
+    void visit(LAndExpAST& ast) override ;
+    void visit(LOrExpAST& ast) override ;
 
     void printIR();
 
