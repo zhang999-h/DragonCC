@@ -319,22 +319,22 @@ void GenIR::visit(EqExpAST& ast) {
     ast.relExp->accept(*this);
     return;
   }
-  // Value* val[2];
-  // ast.eqExp->accept(*this);
-  // val[0] = recentVal;
-  // ast.relExp->accept(*this);
-  // val[1] = recentVal;
-  // checkCalType(val);
-  // if (val[0]->type_ == INT32_T) {
-  //   switch (ast.op) {
-  //   case EOP_EQ:
-  //     recentVal = builder->create_icmp_eq(val[0], val[1]);
-  //     break;
-  //   case EOP_NEQ:
-  //     recentVal = builder->create_icmp_ne(val[0], val[1]);
-  //     break;
-  //   }
-  // }
+  Value* val[2];
+  ast.eqExp->accept(*this);
+  val[0] = recentVal;
+  ast.relExp->accept(*this);
+  val[1] = recentVal;
+  //checkCalType(val);
+  if (val[0]->getType()->isIntegerTy(32) && val[1]->getType()->isIntegerTy(32))  {
+    switch (ast.op) {
+    case EOP_EQ:
+      recentVal = Builder->CreateICmpEQ(val[0], val[1]);
+      break;
+    case EOP_NEQ:
+      recentVal = Builder->CreateICmpNE(val[0], val[1]);
+      break;
+    }
+  }
   // else {
   //   switch (ast.op) {
   //   case EOP_EQ:
