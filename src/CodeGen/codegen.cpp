@@ -1,9 +1,13 @@
 #include "codegen.h"
 #include "scope.h"
+#include <iostream>
 
 #define INT32_TYPE (Type::getInt32Ty(*TheContext))
 #define FLOAT_TYPE (Type::getFloatTy(*TheContext))
 #define VOID_TYPE (Type::getVoidTy(*TheContext))
+#define INT64_TYPE (Type::getInt64Ty(*TheContext))
+
+
 
 GenIR::GenIR(/* args */)
 {
@@ -94,7 +98,7 @@ void GenIR::visit(DefAST& ast) {
     int arr_dim = ast.arrays.size(), len;
     ArrayType* ATy;
     // 创建局部数组
-    for (int i = arr_dim-1;i >= 0;i--) {
+    for (int i = arr_dim - 1;i >= 0;i--) {
       ast.arrays[i]->accept(*this);
       // 将 Value 转换为 ConstantInt
       ConstantInt* constantInt = dyn_cast<ConstantInt>(recentVal);
@@ -104,19 +108,22 @@ void GenIR::visit(DefAST& ast) {
       APInt intValue = constantInt->getValue();
       // 将整数值转换为 int 类型
       len = static_cast<int>(intValue.getSExtValue()); // 或者使用 getZExtValue() 方法转换为无符号值
-      if (i == arr_dim-1) {
+      if (i == arr_dim - 1) {
         ATy = ArrayType::get(curType, len);
       }
       else {
         ATy = ArrayType::get(ATy, len);
       }
     }
+
     auto arrayAlloc = CreateEntryBlockAlloca(TheFunction, var_name, ATy);
     scope.AddNewVar(var_name, arrayAlloc);
     if (!ast.initVal) {//没有初始化返回
-      
-      return ;
+
+      return;
     }
+    //TODO:初始化：
+
   }
 
 
@@ -255,6 +262,19 @@ void GenIR::visit(SelectStmtAST& ast) {
 void GenIR::visit(LValAST& ast) {
   string var_name = *(ast.id);
   AllocaInst* A = scope.FindVar(var_name);
+  if (!ast.arrays.empty()) {
+    std::vector<Value*> idx_list;
+    idx_list.push_back(ConstantInt::get(INT32_TYPE, 0));
+    int i=0;
+    for(auto& idx:ast.arrays){
+      idx->accept(*this);
+      
+      idx_list.push_back(recentVal);
+    }
+    //ArrayType arr_type= A->getType()->getArrayElementType();
+    Builder->CreateGEP(A->getAllocatedType(),A,idx_list,"",true);
+  }
+
   // right value.
   if (!isLVal) {
     Value* t = Builder->CreateLoad(A->getAllocatedType(), A, (*(ast.id)).c_str());

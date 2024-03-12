@@ -1,8 +1,8 @@
 //const int y=10;
 int main(){
-    //int x=1;
-    int a[10][5];
-    // a[5]=55;
+    //int *x;
+    int a[10][5][5];
+     a[5][1][1]=55;
     // return a[5];
     //8;
 }
