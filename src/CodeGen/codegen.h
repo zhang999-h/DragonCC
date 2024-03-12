@@ -1,3 +1,4 @@
+#pragma once
 #include "ast.h"
 #include "scope.h"
 #include <map>
@@ -59,6 +60,10 @@ public:
         IRBuilder<> TmpB(&TheFunction->getEntryBlock(),
             TheFunction->getEntryBlock().begin());
         return TmpB.CreateAlloca(Ty, nullptr, VarName);
+    }
+
+    Module* getModule(){
+        return TheModule.get();
     }
 
 };

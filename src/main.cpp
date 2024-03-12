@@ -6,6 +6,8 @@
 #include "parser.hpp"
 #include "tokens.hpp"
 #include "codegen.h"
+#include "object.h"
+
 using namespace std;
 extern unique_ptr<CompUnitAST> root;
 
@@ -26,5 +28,7 @@ int main(int argc, char** argv) {
     root->accept(genir);
     errs()<<"print LLVM IR:\n";
     genir.printIR();
+
+    Backend(genir);
 
 }

@@ -1,9 +1,11 @@
 //const int y=10;
 int main(){
-    //int *x;
+    int x=9;
     int a[10][5][5];
      a[5][1][1]=55;
-    // return a[5];
+     if(x>0)x=1;
+     else x=-1;
+     //return a[5][1][1];
     //8;
 }
 /*************************

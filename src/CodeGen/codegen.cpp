@@ -72,6 +72,10 @@ void GenIR::visit(FuncDefAST& ast) {
   // }
   Builder->SetInsertPoint(BB);
   ast.block->accept(*this);
+  if(!retBB->hasNPredecessorsOrMore(1)){//没有返回语句就创建默认跳转语句
+    Builder->CreateBr(retBB);
+  }
+  
   retBB->moveAfter(&TheFunction->back());
 }
 
