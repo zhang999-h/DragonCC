@@ -58,7 +58,7 @@ void GenIR::visit(FuncDefAST& ast) {
 
   retAlloca = CreateEntryBlockAlloca(TheFunction, "ret_alloca", ret_type);
   Builder->SetInsertPoint(retBB);
-  auto ret_load = Builder->CreateLoad(retAlloca->getType(), retAlloca, "ret_val");
+  auto ret_load = Builder->CreateLoad(retAlloca->getAllocatedType(), retAlloca, "ret_val");
   Builder->CreateRet(ret_load);
   // if (retType == VOID_T) {//TODO
   //   // void类型无需返回值
