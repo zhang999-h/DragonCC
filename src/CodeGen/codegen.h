@@ -66,6 +66,7 @@ public:
         return TheModule.get();
     }
 
+    Type* getLLVMType(TYPE TyENUM);
 };
 
 

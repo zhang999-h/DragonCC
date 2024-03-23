@@ -7,7 +7,22 @@
 #define VOID_TYPE (Type::getVoidTy(*TheContext))
 #define INT64_TYPE (Type::getInt64Ty(*TheContext))
 
-
+Type* GenIR::getLLVMType(TYPE TyENUM) {
+  switch (TyENUM)
+  {
+  case TYPE_INT/* constant-expression */:
+    return INT32_TYPE;
+    break;
+  case TYPE_FLOAT/* constant-expression */:
+    return FLOAT_TYPE;
+    break;
+  case TYPE_VOID/* constant-expression */:
+    return VOID_TYPE;
+    break;
+  default:
+    break;
+  }
+}
 
 GenIR::GenIR(/* args */)
 {
@@ -45,7 +60,7 @@ void GenIR::visit(FuncDefAST& ast) {
   // std::vector<Type*> Doubles(Args.size(),
   //     Type::getDoubleTy(*TheContext));
   scope.Enter();
-  auto ret_type = INT32_TYPE;
+  auto ret_type = getLLVMType(ast.funcType);
   FunctionType* FT =
     FunctionType::get(ret_type, false);
 
@@ -72,10 +87,10 @@ void GenIR::visit(FuncDefAST& ast) {
   // }
   Builder->SetInsertPoint(BB);
   ast.block->accept(*this);
-  if(!retBB->hasNPredecessorsOrMore(1)){//没有返回语句就创建默认跳转语句
+  if (!retBB->hasNPredecessorsOrMore(1)) {//没有返回语句就创建默认跳转语句
     Builder->CreateBr(retBB);
   }
-  
+
   retBB->moveAfter(&TheFunction->back());
 }
 
@@ -269,14 +284,14 @@ void GenIR::visit(LValAST& ast) {
   if (!ast.arrays.empty()) {
     std::vector<Value*> idx_list;
     idx_list.push_back(ConstantInt::get(INT32_TYPE, 0));
-    int i=0;
-    for(auto& idx:ast.arrays){
+    int i = 0;
+    for (auto& idx : ast.arrays) {
       idx->accept(*this);
-      
+
       idx_list.push_back(recentVal);
     }
     //ArrayType arr_type= A->getType()->getArrayElementType();
-    Builder->CreateGEP(A->getAllocatedType(),A,idx_list,"",true);
+    Builder->CreateGEP(A->getAllocatedType(), A, idx_list, "", true);
   }
 
   // right value.

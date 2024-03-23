@@ -29,6 +29,6 @@ int main(int argc, char** argv) {
     errs()<<"print LLVM IR:\n";
     genir.printIR();
 
-    Backend(genir);
+    //Backend(genir);
 
 }
